@@ -109,7 +109,16 @@ body {
 
 #plank:hover {
     background-color: #5e4cff;
-   
 }
 
+/* --- Pivot (Üçgen) --- */
+.pivot {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid var(--pivot-color);
+    margin-top: -5px;
+    z-index: 1;
+}
 
