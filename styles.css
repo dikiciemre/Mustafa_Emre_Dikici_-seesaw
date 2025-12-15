@@ -1,9 +1,9 @@
 /* Genel renk ve düzen ayarlamaları */
 :root {
-    --bg-color: #fbffcb;
-    --plank-color: #2c3e50; 
-    --pivot-color: #5e4cff; 
-    --block-color: #28c05b; 
+    --bg-color: #f7fbcd;
+    --plank-color: #31485e; 
+    --pivot-color: #5441ff; 
+    --block-color: #1dbe52; 
     --text-color: #000000;
 }
 
