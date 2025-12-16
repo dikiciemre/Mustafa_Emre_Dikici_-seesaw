@@ -130,3 +130,38 @@ body {
 }
 
 
+
+/* --- Bloklar (Ağırlıklar) --- */
+.block {
+    position: absolute;
+    /* Plank 10px + 20px transparent border-bottom = 30px yukarıda olmalı */
+    bottom: 30px; 
+    
+    width: 40px;
+    height: 40px;
+    background-color: var(--block-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    
+    /* Giriş Animasyonu */
+    animation: dropIn 0.3s ease-out;
+    
+    /* Tıklamayı engelleme (Plank tıklanabilsin diye) */
+    pointer-events: none;
+}
+
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -200%) scale(0.5);
+    }
+    to {
+        opacity: 1;
+    }
+}
