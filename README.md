@@ -45,4 +45,5 @@ Sistem, temel fizik kuralları üzerine kuruludur:
     * Ekran boyutu değiştikçe blokların kaymaması için piksel tabanlı değil, **oran (ratio)** tabanlı bir sistem kullanılır. Blokların konumu, çubuğun merkezine olan yüzdelik uzaklıklarına göre saklanır.
 
 ## 🖥️ Uygulama Ekran Görüntüsü
-<img src="./assets/ekran.png" width="600" alt="Proje Görüntüsü">
+<img width="600" height="400" alt="Proje_Ekran_Goruntusu" src="https://github.com/user-attachments/assets/b9271bae-cf6a-4fcf-ba6b-78ce9619b914" />
+
