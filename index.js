@@ -1,158 +1,105 @@
-class SeesawSimulation {
-    constructor() {
-        // Sabitler
-        this.MAX_ANGLE = 30;
-        this.MIN_WEIGHT = 1;
-        this.MAX_WEIGHT = 10;
-        
-        // State (Durum)
-        this.blocks = []; 
-        
-        // DOM Element Seçimleri
-        this.plankElement = document.getElementById('plank');
-        // Pivot elementini referans noktası olarak alıyoruz
-        this.pivotElement = document.querySelector('.pivot'); 
-        this.leftWeightDisplay = document.getElementById('left-total');
-        this.rightWeightDisplay = document.getElementById('right-total');
-        this.resetBtn = document.getElementById('reset-btn');
-
-        // Uygulamayı Başlat
-        this.init();
-    }
-
-    init() {
-        // 1. Kayıtlı veriyi yükle
-        this.loadState();
-
-        // 2. Event Listener'ları bağla
-        if (this.plankElement) {
-            this.plankElement.addEventListener('click', this.handlePlankClick.bind(this));
-        }
-
-        if (this.resetBtn) {
-            this.resetBtn.addEventListener('click', this.handleReset.bind(this));
-        }
-
-        // 3. İlk render
-        this.render();
-    }
-
-    handlePlankClick(event) {
-        // HATA DÜZELTMESİ:
-        // Tahta döndüğünde koordinatları bozulur. Sabit pivotu referans alıyoruz.
-        const pivotRect = this.pivotElement.getBoundingClientRect();
-        const pivotCenter = pivotRect.left + (pivotRect.width / 2);
-        
-        // Tıklanan yerin X koordinatı
-        const clickX = event.clientX;
-        
-        // Merkezden uzaklık (Negatif: Sol, Pozitif: Sağ)
-        const distanceFromPivot = clickX - pivotCenter;
-
-        // Çok küçük tıklamalarda (tam merkez) işlem yapma
-        if (Math.abs(distanceFromPivot) < 5) return;
-
-        // Rastgele ağırlık oluştur
-        const randomWeight = Math.floor(Math.random() * (this.MAX_WEIGHT - this.MIN_WEIGHT + 1)) + this.MIN_WEIGHT;
-
-        // Görsel pozisyon hesabı (CSS left için):
-        // Tahta genişliği 500px, merkezi 250px.
-        const positionOnPlank = 250 + distanceFromPivot;
-
-        const newBlock = {
-            id: Date.now(),
-            weight: randomWeight,
-            distance: distanceFromPivot,
-            position: positionOnPlank
-        };
-
-        this.blocks.push(newBlock);
-        this.saveState();
-        this.render();
-    }
-
-    handleReset() {
-        // State'i sıfırla
-        this.blocks = [];
-        // LocalStorage'ı temizle
-        localStorage.removeItem('insider_seesaw_state');
-        // Sahneyi güncelle
-        this.render();
-    }
-
-    calculatePhysics() {
-        let leftTorque = 0;
-        let rightTorque = 0;
-        let leftTotalWeight = 0;
-        let rightTotalWeight = 0;
-
-        this.blocks.forEach(block => {
-            // Tork = Ağırlık x Mesafe (Mutlak değer)
-            const torque = block.weight * Math.abs(block.distance);
-
-            if (block.distance < 0) {
-                leftTorque += torque;
-                leftTotalWeight += block.weight;
-            } else {
-                rightTorque += torque;
-                rightTotalWeight += block.weight;
-            }
-        });
-
-        // Açı hesaplama: Fark / 10
-        let angle = (rightTorque - leftTorque) / 10;
-        
-        // Açıyı sınırla (+- 30 derece)
-        angle = Math.max(-this.MAX_ANGLE, Math.min(this.MAX_ANGLE, angle));
-
-        return { angle, leftTotalWeight, rightTotalWeight };
-    }
-
-    render() {
-        const physics = this.calculatePhysics();
-
-        // 1. Tahtayı döndür
-        this.plankElement.style.transform = `rotate(${physics.angle}deg)`;
-
-        // 2. Yazıları güncelle
-        this.leftWeightDisplay.innerText = `Sol Ağırlık: ${physics.leftTotalWeight} kg`;
-        this.rightWeightDisplay.innerText = `Sağ Ağırlık: ${physics.rightTotalWeight} kg`;
-
-        // 3. Blokları çiz
-        this.plankElement.innerHTML = ''; 
-        
-        this.blocks.forEach(block => {
-            const blockEl = document.createElement('div');
-            blockEl.classList.add('block'); 
-            
-            // Pozisyonlandırma
-            blockEl.style.left = `${block.position}px`;
-            
-            // Sadece yatayda ortala (Dikey hizalama CSS bottom ile yapılıyor)
-            blockEl.style.transform = 'translateX(-50%)'; 
-            
-            blockEl.innerText = block.weight;
-            this.plankElement.appendChild(blockEl);
-        });
-    }
-
-    saveState() {
-        localStorage.setItem('insider_seesaw_state', JSON.stringify(this.blocks));
-    }
-
-    loadState() {
-        const saved = localStorage.getItem('insider_seesaw_state');
-        if (saved) {
-            try {
-                this.blocks = JSON.parse(saved);
-            } catch (e) {
-                this.blocks = [];
-            }
-        }
-    }
-}
-
-// Uygulama Başlatıcı
 document.addEventListener('DOMContentLoaded', () => {
-    new SeesawSimulation();
+    // DOM Elementleri tanılandı.
+    const beam = document.getElementById('beam');
+    const support = document.querySelector('.support');
+    const txtLeft = document.getElementById('l-score');
+    const txtRight = document.getElementById('r-score');
+    const btnClear = document.getElementById('clear-data');
+
+    const LIMITS = { maxAngle: 30, minW: 1, maxW: 10 };
+    let items = [];
+
+    // Başlangıç fonksiyonu tanımlmandı.
+    const startApp = () => {
+        const savedData = localStorage.getItem('seesaw_data');
+        if (savedData) {
+            items = JSON.parse(savedData);
+        }
+        updateSystem();
+    };
+
+    // Sistemi güncelle ve çiz
+    function updateSystem() {
+        // Hesaplamalar
+        let torqueL = 0, torqueR = 0;
+        let weightL = 0, weightR = 0;
+
+        beam.innerHTML = '';
+
+        items.forEach(item => {
+            // HTML oluşturma alanı.
+            const el = document.createElement('div');
+            el.className = 'item';
+            el.innerText = item.val;
+            el.style.left = item.pos + 'px';
+            el.style.transform = 'translateX(-50%)'; // Ortalamak için
+            beam.appendChild(el);
+
+            // Fizik hesapları yapılma alanı.
+            const force = item.val * Math.abs(item.dist);
+            if (item.dist < 0) {
+                torqueL += force;
+                weightL += item.val;
+            } else {
+                torqueR += force;
+                weightR += item.val;
+            }
+        });
+
+        // Açı hesabı
+        const diff = torqueR - torqueL;
+        let rot = diff / 10;
+        
+        // Clamp (Sınırlama)
+        if (rot > LIMITS.maxAngle) rot = LIMITS.maxAngle;
+        if (rot < -LIMITS.maxAngle) rot = -LIMITS.maxAngle;
+
+        // Görsel güncelleme
+        beam.style.transform = `rotate(${rot}deg)`;
+        txtLeft.innerText = `Sol Ağırlık: ${weightL} kg`;
+        txtRight.innerText = `Sağ Ağırlık: ${weightR} kg`;
+    }
+
+    // Tıklama Olayı burada yapıldı.
+    beam.addEventListener('click', (e) => {
+        const rect = support.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        
+        const clickPos = e.clientX;
+        const dist = clickPos - centerX;
+
+        // Çok merkeze tıklanırsa işlem yapma
+        if (Math.abs(dist) < 5) return;
+
+        // Rastgele ağırlık
+        const w = Math.floor(Math.random() * LIMITS.maxW) + LIMITS.minW;
+
+        // 500px genişlikteki çubukta pozisyon (merkez 250)
+        const cssPos = 250 + dist;
+
+        items.push({
+            id: Date.now(),
+            val: w,
+            dist: dist,
+            pos: cssPos
+        });
+
+        saveAndRender();
+    });
+
+    // Reset Olayı burada tanımlandı.
+    btnClear.addEventListener('click', () => {
+        items = [];
+        localStorage.removeItem('seesaw_data');
+        updateSystem();
+    });
+
+    // Helper fonksiyonu burada yazıldı. 
+    function saveAndRender() {
+        localStorage.setItem('seesaw_data', JSON.stringify(items));
+        updateSystem();
+    }
+
+    // Başlatma.
+    startApp();
 });

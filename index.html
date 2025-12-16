@@ -3,31 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Seesaw Simulation</title>
+    <title>Balance System</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="simulation-container">
-      <div class="header-controls">
-        <div>
-          <h1 >Seesaw Logic</h1>
-          <span class="subtitle">Denge ve Tork Simülasyonu</span>
+    <main id="app-wrapper">
+      <div class="top-bar">
+        <div class="title-group">
+          <h1>Seesaw Logic</h1>
+          <small>Denge ve Tork Simülasyonu</small>
         </div>
-
-        <button id="reset-btn" class="btn-reset">Sıfırla ↻</button>
+        <button id="clear-data">Sıfırla ↻</button>
       </div>
 
-      <div class="stats-panel">
-        <div id="left-total">Sol Ağırlık: 0 kg</div>
-        <div id="right-total">Sağ Ağırlık: 0 kg</div>
+      <div class="info-box">
+        <span id="l-score">Sol Ağırlık: 0 kg</span>
+        <span id="r-score">Sağ Ağırlık: 0 kg</span>
       </div>
 
-      <div class="scene">
-        <div id="plank"></div>
-
-        <div class="pivot"></div>
+      <div class="game-area">
+        <div id="beam"></div>
+        <div class="support"></div>
       </div>
-    </div>
+    </main>
 
     <script src="index.js"></script>
   </body>
