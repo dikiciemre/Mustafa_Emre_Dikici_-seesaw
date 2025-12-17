@@ -1,6 +1,7 @@
 # Mustafa_Emre_Dikici_-seesaw
 
 # 📂 Proje Dizini
+> **🔴 ÖNEMLİ / IMPORTANT:**
 
 # Bu projenin kaynak kodları **`main_project`** dalındadır.
 
