@@ -1,3 +1,4 @@
+/* Global sıfırlama ve varsayılan kutu modeli */
 * {
   margin: 0;
   padding: 0;
@@ -11,22 +12,24 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh; 
+  /* Yatay scroll bar çıkmasını istemiyoruz, özellikle mobilde */
   overflow-x: hidden;
 }
 
 #app-wrapper {
   width: 100%;
-  max-width: 800px;
+  max-width: 800px; /* Tablet/Desktop için sınır */
   padding: 20px;
   text-align: center;
 }
 
+/* --- Header ve Kontroller --- */
 .top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 25px;
-  flex-wrap: wrap; /* sıkışırsa alt satıra geçsin diye ekledim. */
+  flex-wrap: wrap; /* Ekran daralırsa elemanlar alt alta geçsin */
   gap: 10px;
 }
 
@@ -53,7 +56,7 @@ body {
   font-weight: 700;
   cursor: pointer;
   transition: 0.2s;
-  white-space: nowrap; /* Buton yazısı kırılmaması için ekledim. */
+  white-space: nowrap; /* Buton metni asla kırılmasın */
 }
 
 #clear-data:hover {
@@ -62,6 +65,7 @@ body {
   transform: scale(1.05);
 }
 
+/* --- İstatistik Kutusu --- */
 .info-box {
   background: #fff;
   padding: 15px 20px;
@@ -81,6 +85,7 @@ body {
   box-shadow: 2px 3px 7px 3px rgb(41, 173, 255);
 }
 
+/* --- Oyun Alanı --- */
 .game-area {
   position: relative;
   height: 250px; 
@@ -91,19 +96,26 @@ body {
   width: 100%;
 }
 
+/* Çubuk (Beam) Stilleri */
 #beam {
-  width: 100%;       /* Ekran ne kadarsa o kadar olsun */
-  max-width: 500px;  /* Ama 500px'i geçmesin */
+  width: 100%;       /* Responsive: Kapsayıcı ne kadarsa o kadar */
+  max-width: 500px;  /* Ama çok da uzamasın */
   height: 10px;
   background: #31485e;
   border-radius: 4px;
   position: relative;
   cursor: pointer;
   z-index: 10;
+  
+  /* Dönme efekti ayarları */
   transform-origin: 50% 50%;
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* ÖNEMLİ: Border'ları şeffaf yaparak tıklama alanını büyüttük.
+     Ancak 'border-box' yaparsak height 10px bozuluyor.
+     Bu yüzden burada istisnai olarak 'content-box' kullanıyoruz.
+  */
   box-sizing: content-box;
-
   border-top: 30px solid transparent; 
   border-bottom: 30px solid transparent;
   background-clip: padding-box;
@@ -113,19 +125,21 @@ body {
   background-color: #5e4cff;
 }
 
+/* Destek Noktası (Pivot) - CSS ile Üçgen yapımı */
 .support {
   width: 0;
   height: 0;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   border-bottom: 40px solid #5441ff;
-  margin-top: -5px;
+  margin-top: -5px; /* Çubukla hafif iç içe geçsin */
   z-index: 5;
 }
 
+/* Ağırlık Topları */
 .item {
   position: absolute;
-  bottom: 40px; 
+  bottom: 40px; /* Çubuğun kalınlığı + border payı */
   width: 36px;  
   height: 36px;
   background: #1dbe52;
@@ -137,8 +151,10 @@ body {
   font-weight: bold;
   font-size: 12px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  
+  /* Animasyon ve etkileşim */
   animation: fallEffect 0.4s ease-out;
-  pointer-events: none;
+  pointer-events: none; /* Tıklayınca çubuğu engellemesin */
 }
 
 @keyframes fallEffect {
@@ -146,9 +162,10 @@ body {
   100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
 }
 
-/* Mobil için özel ayarlar */
+/* Mobil uyumluluk */
 @media (max-width: 600px) {
   .title-group h1 { font-size: 20px; }
+  /* Bilgi kutusunu mobilde alt alta diziyoruz */
   .info-box { flex-direction: column; gap: 10px; text-align: center; }
   .game-area { height: 200px; }
 }
