@@ -2,6 +2,6 @@
 
 # 📂 Proje Dizini
 
-Bu projenin kaynak kodları **`main_project`** dalına taşınmıştır.
+Bu projenin kaynak kodları **`main_project`** dalındadır.
 
 ### [➡️ Proje Kodlarına Gitmek İçin Tıklayın](../../tree/main_project)
