@@ -3,7 +3,6 @@
 # 📂 Proje Dizini
 > [!CAUTION]
 > **🔴 ÖNEMLİ / IMPORTANT:**
-
-# Bu projenin kaynak kodları **`main_project`** dalındadır.
+> # Bu projenin kaynak kodları **`main_project`** dalındadır.
 
 ### [➡️ Proje Kodlarına Gitmek İçin Tıklayın](../../tree/main_project)
